@@ -10,8 +10,9 @@ SmartPeer provides an easy way of turning a smartphone into versatile controller
   install NPM package:
         `npm install smartpeer`
         
+  ```js
   // The usage -
-  import smartPeer from 'smartpeer';
+  import Peer from 'peerjs';
   ```
 
 
