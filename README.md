@@ -12,7 +12,7 @@ SmartPeer provides an easy way of turning a smartphone into versatile controller
         
   ```js
   // The usage -
-  import Peer from 'peerjs';
+  import SmartPeer from 'smartpeer';
   ```
 
 
@@ -25,7 +25,7 @@ const peer = new smartPeer('id', 'frequency');
 ```
 
 
-**Create a QRcode** 
+**Create a QRcode** \
 Make a qr code for easy phone connection
 ```javascript
 peer.createQrCode(type, url, canvas);
@@ -43,8 +43,8 @@ peer.on(flag, function);
 //Function: pass a function to be called
 ```
 
-**Types of **
-*connection* 
-*data* 
-*close*
+**Types of callbacks**
+*connection* : will pass a number of player who just connected to your function \
+*data* : will pass a player number and the input from the phone \
+*close* : will pass a number of player who just disconnected \
 
