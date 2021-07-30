@@ -29,7 +29,7 @@ const peer = new smartPeer('id', 'frequency');
 Make a qr code for easy phone connection
 ```javascript
 peer.createQrCode(type, url, canvas);
-//you can select one premade controllers by specifying a type (joystick, touchscreen, nes controller) or you can provide a url for your own controller
+//select from premade controllers by specifying a type (joystick, touchscreen, nes controller) or provide a url for your own controller
 //canvas element for the qr code to be displayed
 ```
 
@@ -43,8 +43,20 @@ peer.on(flag, function);
 //Function: pass a function to be called
 ```
 
-**Types of callbacks**
+**Types of callbacks** \
 *connection* : will pass a number of player who just connected to your function \
 *data* : will pass a player number and the input from the phone \
 *close* : will pass a number of player who just disconnected \
+
+**Display stats**
+```javascript
+peer.getStats(type, DomElement)
+//Specify type of stats you wish to display (latency, update frequency...) and an html element to display them
+```
+
+**Access last state player**
+```javascript
+peer.state.playerNumber
+//will return last known state of a given player
+```
 
