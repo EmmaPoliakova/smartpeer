@@ -56,7 +56,7 @@ peer.getStats(type, DomElement)
 //Specify type of stats you wish to display (latency, update frequency...) and an html element to display them
 ```
 
-**Access last state player**
+**Access last state of a player**
 ```javascript
 peer.state.playerNumber
 //will return last known state of a given player
