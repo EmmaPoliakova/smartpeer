@@ -1,7 +1,8 @@
 import Peer from 'peerjs'
 import QRCode from 'qrcode'
+import EventEmitter2 from 'eventemitter2'
 
-export class SmartPeer{
+export class SmartPeer extends EventEmitter2{
 
         /*fields:
         peerCoonection = peerjs object
@@ -10,11 +11,13 @@ export class SmartPeer{
         */
 
         constructor(peerid) {
+            super();
             this.peerConnection = new Peer(peerid); 
             self = this;
       
             this.peerConnection.on('open', function(id) {  //logs the browser peer id
                 console.log('My peer ID is: ' + id);
+                self.emit('open', "hello");
                 
             });
       
@@ -37,11 +40,14 @@ export class SmartPeer{
           peerOnConnection = (conn) => {
             this.remotePeers.push(conn);  //add to current connected peers
             var message = self.remotePeers.indexOf(conn); 
+
             self.peerOnReceiveCallback('connection', message);
+            self.emit('connection', message);
 
             conn.on("data", function(data){
                 var message = [self.remotePeers.indexOf(conn), data]  //send data received from phone/remote peer + the player number/ index from the peer list
                 self.peerOnReceiveCallback("data" ,message);
+                self.emit('data', message);
             });
       
             conn.on('close',function(){  //send a number of a player who disconnected 
@@ -49,6 +55,7 @@ export class SmartPeer{
                 self.remotePeers.splice(self.remotePeers.indexOf(conn), 1);  
                               
                 self.peerOnReceiveCallback("close" ,message);
+                self.emit('close', message);
             });
           }
 
