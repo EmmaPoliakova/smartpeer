@@ -68,3 +68,55 @@ peer.state.players
 //will return a dictoniary of currently connected players
 ```
 
+## RemoteTouchPad
+
+
+**Create a Peer** 
+```javascript
+const touchpad_peer = new TouchPadSmartPeer('id', 'frequency'); 
+```
+
+**Fields** 
+```javascript
+touchpad_peer.finger_number = 1-5;
+touchpad_peer.finger_position = { 1:{x, y}, 2:{x,y}, ... , 5:{x,y}};
+```
+
+**Methods** 
+```javascript
+touchpad_peer.recognizeGesture();
+touchpad_peer..createQRCode(default url);
+```
+
+**Callbacks** 
+```javascript
+touchpad_peer.on("finger_number", func(){});
+touchpad_peer.on("touch_start / touch_move / touch_end", func(){});
+```
+
+
+## RemoteJoystick
+
+
+**Create a Peer** 
+```javascript
+const joystick_peer = new JoystickSmartPeer('id', 'frequency'); 
+```
+
+**Fields** 
+```javascript
+joystick_peer.vector = [x,y]; 
+joystick_peer.last_state = { position :{x, y}, angle:{degrees, radians}, direction :{x, y, angle}, force, distance};
+```
+
+**Methods** 
+```javascript
+touchpad_peer..createQRCode(default url);
+```
+
+**Callbacks** 
+```javascript
+touchpad_peer.on("touch_start / touch_move / touch_end", func(){});
+```
+
+
