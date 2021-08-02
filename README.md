@@ -85,7 +85,7 @@ touchpad_peer.finger_position = { 1:{x, y}, 2:{x,y}, ... , 5:{x,y}};
 **Methods** 
 ```javascript
 touchpad_peer.recognizeGesture();
-touchpad_peer..createQRCode(default url);
+touchpad_peer.createQRCode(default url);
 ```
 
 **Callbacks** 
@@ -106,17 +106,17 @@ const joystick_peer = new JoystickSmartPeer('id', 'frequency');
 **Fields** 
 ```javascript
 joystick_peer.vector = [x,y]; 
-joystick_peer.last_state = { position :{x, y}, angle:{degrees, radians}, direction :{x, y, angle}, force, distance};
+joystick_peer.state = { position :{x, y}, angle:{degrees, radians}, direction :{x, y, angle}, force, distance};
 ```
 
 **Methods** 
 ```javascript
-touchpad_peer..createQRCode(default url);
+joystick_peer.createQRCode(default url);
 ```
 
 **Callbacks** 
 ```javascript
-touchpad_peer.on("touch_start / touch_move / touch_end", func(){});
+joystick_peer.on("touch_start / touch_move / touch_end", func(){});
 ```
 
 
