@@ -69,7 +69,8 @@ peer.state.players
 ```
 
 ## RemoteTouchPad
-
+Adds fields, methods and callback options specific to touchscreen input \
+Extends SmartPeer\ 
 
 **Create a Peer** 
 ```javascript
@@ -80,23 +81,32 @@ const touchpad_peer = new TouchPadSmartPeer('id', 'frequency');
 ```javascript
 touchpad_peer.finger_number = 1-5;
 touchpad_peer.finger_position = { 1:{x, y}, 2:{x,y}, ... , 5:{x,y}};
+
+// current number of fingers on touchscreen
+// dictionary of coordinates for each finger
 ```
 
 **Methods** 
 ```javascript
 touchpad_peer.recognizeGesture();
-touchpad_peer.createQRCode(default url);
+touchpad_peer.createQRCode(default url, canvas);
+
+// recognizeGesture will take the current finger_postion and tries to match it to one of the available gestures
+// createQRCode defaults to url with premade touch pad
 ```
 
 **Callbacks** 
 ```javascript
-touchpad_peer.on("finger_number", func(){});
+touchpad_peer.on(finger_number, func(){});
 touchpad_peer.on("touch_start / touch_move / touch_end", func(){});
+
+//finger_number can be set to 1-5 to call a specific function when there is input from 1-5 fingers
+//start/move/end commands on touchpad
 ```
 
 
 ## RemoteJoystick
-
+Adds fields, methods and callback options specific to joystick input \
 
 **Create a Peer** 
 ```javascript
@@ -107,16 +117,21 @@ const joystick_peer = new JoystickSmartPeer('id', 'frequency');
 ```javascript
 joystick_peer.vector = [x,y]; 
 joystick_peer.state = { position :{x, y}, angle:{degrees, radians}, direction :{x, y, angle}, force, distance};
+
+//current vector calulated from the centre of the joystick and its current position
+//provides description of the last knows state of the joystick
 ```
 
 **Methods** 
 ```javascript
 joystick_peer.createQRCode(default url);
+//createQRCode defaults to url with premeda joystick
 ```
 
 **Callbacks** 
 ```javascript
 joystick_peer.on("touch_start / touch_move / touch_end", func(){});
+//start/move/end commands on joystick
 ```
 
 
