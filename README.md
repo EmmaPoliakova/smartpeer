@@ -70,7 +70,7 @@ peer.state.players
 
 ## RemoteTouchPad
 Adds fields, methods and callback options specific to touchscreen input \
-Extends SmartPeer\ 
+Extends SmartPeer
 
 **Create a Peer** 
 ```javascript
@@ -107,6 +107,7 @@ touchpad_peer.on("touch_start / touch_move / touch_end", func(){});
 
 ## RemoteJoystick
 Adds fields, methods and callback options specific to joystick input \
+Extends SmartPeer
 
 **Create a Peer** 
 ```javascript
@@ -125,7 +126,7 @@ joystick_peer.state = { position :{x, y}, angle:{degrees, radians}, direction :{
 **Methods** 
 ```javascript
 joystick_peer.createQRCode(default url);
-//createQRCode defaults to url with premeda joystick
+//createQRCode defaults to url with premade joystick
 ```
 
 **Callbacks** 
