@@ -2,6 +2,35 @@ import Peer from 'peerjs'
 import QRCode from 'qrcode'
 import EventEmitter2 from 'eventemitter2'
 
+class Joystick{
+
+  /*fields:
+   state = last known joystick state
+   vector = current vector calulated from the centre of the joystick and its current position
+   
+   */
+
+ constructor(playerNum){
+   this.playerNum = playerNum;
+   this.isActive = false;
+   this.state = [];
+   this.vector= [];
+   this.lastPosition = {x:0, y:0}
+ }
+}
+
+class TouchPad{
+
+ constructor(playerNum){
+   this.playerNum = playerNum;
+   this.isActive = false;
+   this.state = [];
+   this.finger_number = 0;
+ }
+}
+
+
+
 export class SmartPeer extends EventEmitter2{
 
         /*fields:
@@ -23,38 +52,29 @@ export class SmartPeer extends EventEmitter2{
       
             this.peerConnection.on("connection", this.peerOnConnection);  //opens the data connection between 2 peers once a connection is established
             this.remotePeers = [];
-            this.callbackFunctions = {};
         }
       
-          registerCallback = (flag, callbackFunction) => {
-           
-            this.callbackFunctions[flag] = callbackFunction
-            }
           
-          peerOnReceiveCallback = (flag, data) => {
-            if (flag in this.callbackFunctions){
-              this.callbackFunctions[flag](data);
-            }
-          }
+
       
           peerOnConnection = (conn) => {
             this.remotePeers.push(conn);  //add to current connected peers
             var message = self.remotePeers.indexOf(conn); 
 
-            self.peerOnReceiveCallback('connection', message);
             self.emit('connection', message);
 
             conn.on("data", function(data){
                 var message = [self.remotePeers.indexOf(conn), data]  //send data received from phone/remote peer + the player number/ index from the peer list
-                self.peerOnReceiveCallback("data" ,message);
+          
                 self.emit('data', message);
             });
       
             conn.on('close',function(){  //send a number of a player who disconnected 
                 var message = "Player " + self.remotePeers.indexOf(conn) + " disconnected"; 
                 self.remotePeers.splice(self.remotePeers.indexOf(conn), 1);  
-                              
-                self.peerOnReceiveCallback("close" ,message);
+                
+                console.log(this.remotePeers);
+
                 self.emit('close', message);
             });
           }
@@ -82,23 +102,33 @@ export class SmartPeer extends EventEmitter2{
   
       constructor(peerid) {
           super(peerid);
-          //self = this;
-          this.finger_number = 0;
-          this.finger_position = {}
-  
+          self = this;
+          this.touchpadList = [];
           this.peerConnection.on("connection", this.touchpadOptions);
       }
       
       touchpadOptions = (conn) => {
+          self.touchpadList[conn.peer] = new TouchPad(self.remotePeers.indexOf(conn));
+
           conn.on("data", function(data){
-  
-              self.finger_position = data.details;
-              self.finger_number = Object.keys(self.finger_position).length;
-  
-              self.emit(self.finger_number, self.finger_number);
-  
+
+              var touchpad = self.touchpadList[conn.peer];
+
               //start move stop
               self.emit(data[0]);
+              console.log(data[0])
+
+              touchpad.state = data[2];
+  
+              self.emit(touchpad.finger_number);
+
+              if (data[0]=="start"){
+                self.touchpadList[conn.peer].isActive = true;
+              }
+    
+              if (data[0]=="end"){
+                self.touchpadList[conn.peer].isActive = false;
+              }
          
           });
         }
@@ -116,46 +146,62 @@ export class SmartPeer extends EventEmitter2{
   
   }
 
-  export class JoystickSmartPeer extends SmartPeer{
+  
+export class JoystickSmartPeer extends SmartPeer{
 
-    /*fields:
-    state = last known joystick state
-    vector = current vector calulated from the centre of the joystick and its current position
-    
-    */
-
-    constructor(peerid) {
-        super(peerid);
-        self = this;
-        this.state = {};
-        this.vector= [];
-
-        this.peerConnection.on("connection", this.joystickOptions);
-    }
-    
-    joystickOptions = (conn) => {
-        conn.on("data", function(data){
-
-            self.state = data[1];
-
-            //start move stop
-            self.emit(data[0]);
-
-        });
-      }
+  constructor(peerid) {
+      super(peerid);
+      self = this;
+      this.joystickList = {};
 
 
-      createQrCode = (url = "joystick url", canvasID) => {
-        self.peerConnection.on("open" , function(id){
-          QRCode.toCanvas(document.getElementById(canvasID), url +"?id="+self.peerConnection.id, function (error) {
-            if (error) console.error(error)
-            console.log('success!');
-
-        })
-    })
+      this.peerConnection.on("connection", this.joystickOptions);
   }
+  
+  joystickOptions = (conn) => {
+      self.joystickList[conn.peer] = new Joystick(self.remotePeers.indexOf(conn));
+
+      
+      conn.on("data", function(data){
+
+          self.emit(data[0]);     
+
+          if (data[0]=="start"){
+            self.joystickList[conn.peer].isActive = true;
+          }
+
+          if (data[0]=="end"){
+            self.joystickList[conn.peer].isActive = false;
+          }
+          
+          self.joystickList[conn.peer].state = data[1];
+          
+          var xunits = Math.cos(data[1].angle.degree*Math.PI/180) * 10;
+          var yunits = Math.sin(data[1].angle.degree*Math.PI/180) * 10;
+
+          console.log(xunits + " " + yunits)
+          self.joystickList[conn.peer].lastPosition.x += xunits
+          self.joystickList[conn.peer].lastPosition.y += yunits
+          
+        
+          
+          
+      });
+    }
+
+
+    createQrCode = (url = "joystick url", canvasID) => {
+      self.peerConnection.on("open" , function(id){
+        QRCode.toCanvas(document.getElementById(canvasID), url +"?id="+self.peerConnection.id, function (error) {
+          if (error) console.error(error)
+          console.log('success!');
+
+      })
+  })
+}
 
 }
+
   
   
 
