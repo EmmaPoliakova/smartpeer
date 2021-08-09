@@ -51,14 +51,17 @@ export class SmartPeer extends EventEmitter2{
             });
       
             this.peerConnection.on("connection", this.peerOnConnection);  //opens the data connection between 2 peers once a connection is established
-            this.remotePeers = [];
+            this.remotePeers = ['empty'];
         }
       
           
 
       
           peerOnConnection = (conn) => {
-            this.remotePeers.push(conn);  //add to current connected peers
+            var newPlayer = this.remotePeers.indexOf('empty')
+            this.remotePeers[newPlayer] = conn;  //add to current connected peers
+            this.remotePeers.push('empty');
+
             var message = self.remotePeers.indexOf(conn); 
 
             self.emit('connection', message);
@@ -71,10 +74,7 @@ export class SmartPeer extends EventEmitter2{
       
             conn.on('close',function(){  //send a number of a player who disconnected 
                 var message = "Player " + self.remotePeers.indexOf(conn) + " disconnected"; 
-                self.remotePeers.splice(self.remotePeers.indexOf(conn), 1);  
-                
-                console.log(this.remotePeers);
-
+                self.remotePeers[self.remotePeers.indexOf(conn)] = 'empty';  
                 self.emit('close', message);
             });
           }
